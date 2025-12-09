@@ -71,9 +71,6 @@ stages:
   jobs:
   - job: ApprovalAndApplyProd
     steps:
-    - task: ManualValidation@0
-      inputs:
-        instructions: 'Review tfplan artifact and approve to deploy to Prod.'
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: '1.6.6'

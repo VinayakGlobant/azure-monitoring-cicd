@@ -36,7 +36,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform init, fmt, validate
       inputs:
-        azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
+        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -55,7 +55,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform plan
       inputs:
-        azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
+        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -79,7 +79,7 @@ stages:
 #     - task: AzureCLI@2
 #       displayName: Terraform apply (QA)
 #       inputs:
-#         azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
+#         azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
 #         scriptType: bash
 #         scriptLocation: inlineScript
 #         inlineScript: |
@@ -101,7 +101,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform apply (Prod)
       inputs:
-        azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
+        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |

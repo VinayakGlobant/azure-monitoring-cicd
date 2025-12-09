@@ -9,6 +9,7 @@ parameters:
     type: string
     default: qa
     values:
+      - qa
       - prod
 
 variables:
@@ -35,7 +36,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform init, fmt, validate
       inputs:
-        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
+        azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -54,7 +55,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform plan
       inputs:
-        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
+        azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -70,7 +71,7 @@ stages:
 
 # - stage: Deploy_QA
 #   displayName: Deploy QA
-#   condition: eq(parameters.environment, 'qa')
+#   condition: eq(variables['environment'], 'qa')
 #   dependsOn: Plan
 #   jobs:
 #   - job: ApplyQA
@@ -78,7 +79,7 @@ stages:
 #     - task: AzureCLI@2
 #       displayName: Terraform apply (QA)
 #       inputs:
-#         azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
+#         azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
 #         scriptType: bash
 #         scriptLocation: inlineScript
 #         inlineScript: |
@@ -88,20 +89,18 @@ stages:
 
 - stage: Deploy_Prod
   displayName: Deploy Prod
-  condition: eq(parameters.environment, 'prod')
+  condition: eq(variables['environment'], 'prod')
   dependsOn: Plan
   jobs:
   - job: ApprovalAndApplyProd
     steps:
     - task: ManualValidation@0
-      #displayName: Approval: 'Proceed to Prod?'
       inputs:
         instructions: 'Review tfplan artifact and approve to deploy to Prod.'
-        notifyUsers: vinayak.kadam@globant.com
     - task: AzureCLI@2
       displayName: Terraform apply (Prod)
       inputs:
-        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
+        azureSubscription: 'VS Professional SVS Professional Subscription-Nitin Pradhanubscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |

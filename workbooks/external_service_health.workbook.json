@@ -1,0 +1,32 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "AppAvailabilityResults\n| where timestamp > ago(24h)\n| summarize AvailabilityPct = 100.0 * countif(success == \"True\") / count() by name\n| extend Status = case(AvailabilityPct >= 99, \"ALL UP\", \"ISSUE\")\n| project name, Status",
+        "size": 1,
+        "title": "External Service Health",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Status",
+              "formatter": 9,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholds": [
+                  { "operator": "==", "thresholdValue": "ALL UP", "representation": "success" },
+                  { "operator": "==", "thresholdValue": "ISSUE", "representation": "danger" }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "fallbackResourceIds": []
+}

@@ -28,5 +28,5 @@ provider "azurerm" {
     }
   }
   # If you register providers manually, you can skip auto-registration:
-  # skip_provider_registration = true
+    skip_provider_registration = true
 }

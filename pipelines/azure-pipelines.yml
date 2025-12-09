@@ -95,7 +95,7 @@ stages:
   - job: ApprovalAndApplyProd
     steps:
     - task: ManualValidation@0
-      displayName: Approval: 'Proceed to Prod?'
+      #displayName: Approval: 'Proceed to Prod?'
       inputs:
         instructions: 'Review tfplan artifact and approve to deploy to Prod.'
         notifyUsers: vinayak.kadam@globant.com

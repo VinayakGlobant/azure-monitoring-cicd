@@ -68,23 +68,23 @@ stages:
     - publish: $(System.DefaultWorkingDirectory)/terraform/tfplan
       artifact: tfplan
 
-- stage: Deploy_QA
-  displayName: Deploy QA
-  condition: eq(parameters.environment, 'qa')
-  dependsOn: Plan
-  jobs:
-  - job: ApplyQA
-    steps:
-    - task: AzureCLI@2
-      displayName: Terraform apply (QA)
-      inputs:
-        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          set -e
-          cd $(workingDir)
-          terraform apply -input=false -auto-approve tfplan
+# - stage: Deploy_QA
+#   displayName: Deploy QA
+#   condition: eq(parameters.environment, 'qa')
+#   dependsOn: Plan
+#   jobs:
+#   - job: ApplyQA
+#     steps:
+#     - task: AzureCLI@2
+#       displayName: Terraform apply (QA)
+#       inputs:
+#         azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
+#         scriptType: bash
+#         scriptLocation: inlineScript
+#         inlineScript: |
+#           set -e
+#           cd $(workingDir)
+#           terraform apply -input=false -auto-approve tfplan
 
 - stage: Deploy_Prod
   displayName: Deploy Prod

@@ -94,10 +94,10 @@ stages:
   jobs:
   - job: ApprovalAndApplyProd
     steps:
-    - task: ManualValidation@0
-      inputs:
-        notifyUsers: 'vinayak.kadam@globant.com'
-        instructions: 'Review tfplan artifact and approve to deploy to Prod.'
+    # - task: ManualValidation@0
+    #   inputs:
+    #     notifyUsers: 'vinayak.kadam@globant.com'
+    #     instructions: 'Review tfplan artifact and approve to deploy to Prod.'
     - task: AzureCLI@2
       displayName: Terraform apply (Prod)
       inputs:

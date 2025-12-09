@@ -37,17 +37,12 @@ stages:
       displayName: Terraform init, fmt, validate
       inputs:
         azureSubscription: 'Your-Service-Connection-Name'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
+        scriptType: bash
+        scriptLocation: inlineScript
         inlineScript: |
           set -e
           cd $(workingDir)
-          # Configure backend with pipeline variables or pre-filled in providers.tf
-          terraform init -input=false \
-            -backend-config="resource_group_name=$(TF_STATE_RG)" \
-            -backend-config="storage_account_name=$(TF_STATE_SA)" \
-            -backend-config="container_name=$(TF_STATE_CONTAINER)" \
-            -backend-config="key=workbooks/$(Build.SourceBranchName).tfstate"
+          terraform init -input=false
           terraform fmt -check
           terraform validate
 
@@ -61,21 +56,22 @@ stages:
       displayName: Terraform plan
       inputs:
         azureSubscription: 'Your-Service-Connection-Name'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
+        scriptType: bash
+        scriptLocation: inlineScript
         inlineScript: |
           set -e
           cd $(workingDir)
-          ENV=${{ parameters.environment }}
-          TFVARS="${ENV}.tfvars"
-          terraform plan -input=false -var-file=${TFVARS} -out=tfplan
+          ENV=$(environment)
+          TFVARS="$ENV.tfvars"
+          terraform init -input=false
+          terraform plan -input=false -var-file=$TFVARS -out=tfplan
 
     - publish: $(System.DefaultWorkingDirectory)/terraform/tfplan
       artifact: tfplan
 
 - stage: Deploy_QA
   displayName: Deploy QA
-  condition: eq('${{ parameters.environment }}','qa')
+  condition: eq(parameters.environment, 'qa')
   dependsOn: Plan
   jobs:
   - job: ApplyQA
@@ -84,8 +80,8 @@ stages:
       displayName: Terraform apply (QA)
       inputs:
         azureSubscription: 'Your-Service-Connection-Name'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
+        scriptType: bash
+        scriptLocation: inlineScript
         inlineScript: |
           set -e
           cd $(workingDir)
@@ -93,21 +89,22 @@ stages:
 
 - stage: Deploy_Prod
   displayName: Deploy Prod
-  condition: eq('${{ parameters.environment }}','prod')
+  condition: eq(parameters.environment, 'prod')
   dependsOn: Plan
   jobs:
   - job: ApprovalAndApplyProd
     steps:
     - task: ManualValidation@0
-      displayName: Approval: Proceed to Prod?
+      displayName: Approval: 'Proceed to Prod?'
       inputs:
         instructions: 'Review tfplan artifact and approve to deploy to Prod.'
+        notifyUsers: vinayak.kadam@globant.com
     - task: AzureCLI@2
       displayName: Terraform apply (Prod)
       inputs:
         azureSubscription: 'Your-Service-Connection-Name'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
+        scriptType: bash
+        scriptLocation: inlineScript
         inlineScript: |
           set -e
           cd $(workingDir)

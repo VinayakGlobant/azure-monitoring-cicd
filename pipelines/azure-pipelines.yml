@@ -9,7 +9,6 @@ parameters:
     type: string
     default: qa
     values:
-      - qa
       - prod
 
 variables:
@@ -36,7 +35,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform init, fmt, validate
       inputs:
-        azureSubscription: 'Your-Service-Connection-Name'
+        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -55,7 +54,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform plan
       inputs:
-        azureSubscription: 'Your-Service-Connection-Name'
+        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -79,7 +78,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform apply (QA)
       inputs:
-        azureSubscription: 'Your-Service-Connection-Name'
+        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
@@ -102,7 +101,7 @@ stages:
     - task: AzureCLI@2
       displayName: Terraform apply (Prod)
       inputs:
-        azureSubscription: 'Your-Service-Connection-Name'
+        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |

@@ -2,7 +2,10 @@ trigger:
   branches:
     include:
       - main
-
+  paths:
+    include:
+    - terraform/*
+    
 parameters:
   - name: environment
     displayName: Target environment

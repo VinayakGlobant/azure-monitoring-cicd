@@ -13,7 +13,6 @@ parameters:
       - prod
 
 variables:
-  terraformVersion: '1.6.6'
   workingDir: 'terraform'
 
 pool:
@@ -21,7 +20,6 @@ pool:
 
 stages:
 - stage: Validate
-  displayName: Validate Terraform
   jobs:
   - job: TerraformValidate
     steps:
@@ -29,79 +27,62 @@ stages:
       inputs:
         terraformVersion: '1.6.6'
 
-      
-    - task: AzureCLI@2
-      displayName: Terraform init, fmt, validate
-      inputs:
-        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          set -e
-          cd $(workingDir)
-          terraform init -input=false
-          terraform fmt -check
-          terraform validate
+    - script: |
+        cd $(workingDir)
+        terraform init -input=false
+        terraform fmt -check
+        terraform validate
+      displayName: Terraform init/validate
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
 
 - stage: Plan
-  displayName: Plan
   dependsOn: Validate
   jobs:
   - job: TerraformPlan
     steps:
-    - task: AzureCLI@2
-      displayName: Terraform plan
+    - task: TerraformInstaller@0
       inputs:
-        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          set -e
-          cd $(workingDir)
-          ENV=$(environment)
-          TFVARS="$ENV.tfvars"
-          terraform init -input=false
-          terraform plan -input=false -var-file=$TFVARS -out=tfplan
+        terraformVersion: '1.6.6'
+
+    - script: |
+        cd $(workingDir)
+        ENV=$(environment)
+        TFVARS="$ENV.tfvars"
+        terraform init -input=false
+        terraform plan -input=false -var-file=$TFVARS -out=tfplan
+      displayName: Terraform plan
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
 
     - publish: $(System.DefaultWorkingDirectory)/terraform/tfplan
       artifact: tfplan
 
-# - stage: Deploy_QA
-#   displayName: Deploy QA
-#   condition: eq(variables['environment'], 'qa')
-#   dependsOn: Plan
-#   jobs:
-#   - job: ApplyQA
-#     steps:
-#     - task: AzureCLI@2
-#       displayName: Terraform apply (QA)
-#       inputs:
-#         azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
-#         scriptType: bash
-#         scriptLocation: inlineScript
-#         inlineScript: |
-#           set -e
-#           cd $(workingDir)
-#           terraform apply -input=false -auto-approve tfplan
 
 - stage: Deploy_Prod
-  displayName: Deploy Prod
   condition: eq(variables['environment'], 'prod')
   dependsOn: Plan
   jobs:
   - job: ApprovalAndApplyProd
     steps:
-    # - task: ManualValidation@0
-    #   inputs:
-    #     notifyUsers: 'vinayak.kadam@globant.com'
-    #     instructions: 'Review tfplan artifact and approve to deploy to Prod.'
-    - task: AzureCLI@2
-      displayName: Terraform apply (Prod)
+    - task: ManualValidation@0
       inputs:
-        azureSubscription: 'VS Professional Subscription-Nitin Pradhan'
-        scriptType: bash
-        scriptLocation: inlineScript
-        inlineScript: |
-          set -e
-          cd $(workingDir)
-          terraform apply -input=false -auto-approve tfplan
+        instructions: 'Review tfplan artifact and approve to deploy to Prod.'
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: '1.6.6'
+    - script: |
+        cd $(workingDir)
+        terraform apply -input=false -auto-approve tfplan
+      displayName: Terraform apply (Prod)
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)

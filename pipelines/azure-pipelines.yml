@@ -7,7 +7,7 @@ parameters:
   - name: environment
     displayName: Target environment
     type: string
-    default: qa
+    default: prod
     values:
       - prod
 
